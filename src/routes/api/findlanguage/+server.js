@@ -1,4 +1,5 @@
-import { ModelOperations } from '@vscode/vscode-languagedetection';
+import pkg from '@vscode/vscode-languagedetection';
+const { ModelOperations } = pkg;
 
 const moduleOperations = new ModelOperations();
 
