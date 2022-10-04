@@ -46,9 +46,18 @@
 		<div class="overflow-auto px-4 py-5 sm:p-6 scrollbar-hide">
 			<div class="absolute top-0 right-0 grid grid-flow-col">
 				{#if !isCopied}
-					<p on:click={handleCopy} class="px-2 py-2 shadow-lg">Click To Copy</p>
+					<p
+						in:fade={{ duration: 1500 }}
+						out:fade={{ duration: 1 }}
+						on:click={handleCopy}
+						class="px-2 py-2 shadow-lg"
+					>
+						Click To Copy
+					</p>
 				{:else}
-					<p disabled="true" class="px-2 py-2 shadow-lg">Copied</p>
+					<p in:fade={{ duration: 1500 }} out:fade={{ duration: 1 }} class="px-2 py-2 shadow-lg">
+						Text Copied
+					</p>
 				{/if}
 				<span class="px-2 py-2 shadow-lg">{language ? language : ''}</span>
 			</div>
