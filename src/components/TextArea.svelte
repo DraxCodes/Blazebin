@@ -6,11 +6,22 @@
 	export let minRows = 1;
 	export let maxRows;
 
+	let codeEditor;
+
 	$: minHeight = `${1 + minRows * 1.2}em`;
 	$: maxHeight = maxRows ? `${1 + maxRows * 1.2}em` : `auto`;
 
 	const handleTextChange = () => {
 		pasteBody.set(value);
+	};
+
+	const handleKeyDown = (e) => {
+		if (e.keyCode === 9) {
+			const { selectionStart: start, selectionEnd: end } = codeEditor;
+			e.preventDefault();
+			value = value.slice(0, start) + '\t' + value.slice(end);
+			codeEditor.setSelectionRange(start + 2, start + 1);
+		}
 	};
 </script>
 
@@ -23,9 +34,12 @@
 			'\n'}</pre>
 
 	<textarea
+		bind:this={codeEditor}
+		on:keydown={handleKeyDown}
 		class="border-transparent focus:border-transparent focus:ring-0 rounded-lg overflow-auto"
 		on:change={handleTextChange}
 		bind:value
+		bind
 		placeholder="Paste here..."
 	/>
 </div>
