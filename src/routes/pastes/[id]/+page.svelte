@@ -1,24 +1,64 @@
 <script>
-  import github from "svelte-highlight/styles/github";
-  import hljs from "highlight.js";
+	import github from 'svelte-highlight/styles/github';
+	import hljs from 'highlight.js';
+	import { page } from '$app/stores';
+	import { fade } from 'svelte/transition';
 
-  export let data;
-  const result = hljs.highlight(data.paste.body, { language: data.paste.language}).value;
-  console.log(data);
+	let hljsResult;
+	let originalResult;
+	let language;
+	let pending = true;
+	let isCopied = false;
+
+	const loadPaste = async () => {
+		const pasteResponse = await fetch(`/api/db/get?url_slug=${$page.params.id}`);
+		if (pasteResponse.ok) {
+			const pasteResult = await pasteResponse.json();
+			originalResult = pasteResult.body;
+			language = pasteResult.language;
+			hljsResult = hljs.highlight(pasteResult.body, { language: pasteResult.language }).value;
+			pending = false;
+		} else {
+			pending = false;
+		}
+	};
+
+	const handleCopy = () => {
+		if (!isCopied) {
+			navigator.clipboard.writeText(originalResult);
+			isCopied = true;
+			setTimeout(() => {
+				isCopied = false;
+			}, 3000);
+		}
+	};
+
+	const handleHover = () => {
+		console.log('yay');
+	};
 </script>
 
 <svelte:head>
-  {@html github}
+	{@html github}
 </svelte:head>
-
-<div class="overflow-hidden rounded-lg bg-white shadow m-10 mx-48">
-  <div class="relative px-4 py-5 sm:p-6">
-    <span class="absolute top-0 right-0 px-2 py-2 shadow-lg">{data.paste.language}</span>
-    <pre>{@html result}</pre>
-  </div>
+<div on:mousedown={handleCopy} class="pb-4 max-w-7xl mx-auto">
+	<div class="relative rounded-lg bg-white shadow m-10">
+		<div class="overflow-auto px-4 py-5 sm:p-6 scrollbar-hide">
+			<div class="absolute top-0 right-0 grid grid-flow-col">
+				{#if !isCopied}
+					<p on:click={handleCopy} class="px-2 py-2 shadow-lg">Click To Copy</p>
+				{:else}
+					<p disabled="true" class="px-2 py-2 shadow-lg">Copied</p>
+				{/if}
+				<span class="px-2 py-2 shadow-lg">{language ? language : ''}</span>
+			</div>
+			{#if hljsResult}
+				<pre in:fade={{ duration: 1500 }} out:fade={{ duration: 1 }}>{@html hljsResult}</pre>
+			{:else if pending && !hljsResult}
+				<p use:loadPaste>Loading....</p>
+			{:else if !pending && !hljsResult}
+				<p>Paste not found...</p>
+			{/if}
+		</div>
+	</div>
 </div>
-
-<style>
-
-</style>
-

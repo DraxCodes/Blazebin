@@ -6,9 +6,7 @@ export const ConnectToMongoDB = async () => {
 	try {
 		const uri = encodeURI(MONGODB_URL);
 		mongoClient = new MongoClient(uri);
-		console.log('Connecting to MongoDB...');
 		await mongoClient.connect();
-		console.log('Successfully connected to MongoDB!');
 		return mongoClient;
 	} catch (error) {
 		console.error('Connection to MongoDB failed!', error);
@@ -20,6 +18,7 @@ export const AddPaste = async (paste) => {
 	let mongoClient;
 	try {
 		mongoClient = await ConnectToMongoDB();
+		console.log('Connecting to MongoDB... (Add Paste)', paste);
 		const db = mongoClient.db('Blazebin');
 		const collection = db.collection('pastes');
 
@@ -33,6 +32,7 @@ export const GetPaste = async (id) => {
 	let mongoClient;
 	try {
 		mongoClient = await ConnectToMongoDB();
+		console.log('Connecting to MongoDB... (GetPaste)', id);
 		const db = mongoClient.db('Blazebin');
 		const collection = db.collection('pastes');
 
