@@ -4,7 +4,7 @@
   <hr/>
 </p>
 
-<img src="https://blazebin.net/r/Nyqm0u.png" />
+<img src="https://blazebin.net/r/PuKLra.png" />
 
 ## Developing
 
