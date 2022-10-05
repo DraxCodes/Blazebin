@@ -31,6 +31,7 @@
 	"dependencies": {
 		"@supabase/supabase-js": "^1.35.7",
 		"@vscode/vscode-languagedetection": "^1.0.21",
+		"encoding": "^0.1.13",
 		"firebase": "^9.10.0",
 		"highlight.js": "^11.6.0",
 		"mongodb": "^4.10.0",
