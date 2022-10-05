@@ -3,7 +3,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 const config = {
 	plugins: [sveltekit()],
 	optimizeDeps: {
-		include: ['highlight.js', 'highlight.js/lib/core', '@vscode/vscode-languagedetection']
+		include: ['highlight.js', 'highlight.js/lib/core']
 	},
 	server: {
 		port: 5173,
