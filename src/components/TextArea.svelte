@@ -25,6 +25,7 @@
 	};
 </script>
 
+<p class="font-extralight pl-2">Please note: Default language is Markdown</p>
 <div
 	in:fade={{ duration: 1000 }}
 	out:fade={{ duration: 1 }}
