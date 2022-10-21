@@ -18,7 +18,7 @@ export const AddPaste = async (paste) => {
 	let mongoClient;
 	try {
 		mongoClient = await ConnectToMongoDB();
-		console.log('Connecting to MongoDB... (Add Paste)', paste);
+		console.log('Connecting to MongoDB... (Add Paste)', paste.url_slug);
 		const db = mongoClient.db('Blazebin');
 		const collection = db.collection('pastes');
 

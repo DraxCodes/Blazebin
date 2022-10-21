@@ -1,11 +1,10 @@
 <script>
 	import { goto } from '$app/navigation';
+	import favicon from '$lib/assets/favicon.png';
 
 	const handleClick = async () => {
 		goto('/account');
 	};
-
-	const handleLoginClick = () => {};
 </script>
 
 <nav class="bg-gray-800">
@@ -13,7 +12,7 @@
 		<div class="flex h-16 items-center justify-between">
 			<div class="flex items-center">
 				<div class="flex-shrink-0 grid grid-flow-col text-xl">
-					<img class="h-8 w-8" src="favicon.png" alt="Blazebin" />
+					<img class="h-8 w-8" src={favicon} alt="Blazebin" />
 					<p class="w-14 mt-1 ml-1 text-gray-200">Blazebin</p>
 				</div>
 				<div class="hidden md:block">
