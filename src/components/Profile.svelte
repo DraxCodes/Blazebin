@@ -1,31 +1,33 @@
 <script>
 	import { supabase } from '$lib/supabaseClient';
-	import { user } from '$lib/sessionStore';
-	import { invalidate } from '$app/navigation';
+	import { goto } from '$app/navigation';
+
+	export let user;
 
 	let loading = true;
 	let discord_name = null;
 	let discord_id = null;
 	let avatar_url = null;
 
-	function getProfile(node) {
+	function getProfile() {
 		try {
 			loading = true;
-			const user = supabase.auth.user();
-
-			supabase
-				.from('profiles')
-				.select(`discord_id, avatar_url, discord_name`)
-				.eq('id', user?.id)
-				.single()
-				.then(({ data, error, status }) => {
-					if (data) {
-						discord_name = data.discord_name;
-						discord_id = data.discord_id;
-						avatar_url = data.avatar_url;
-					}
-					if (error && status !== 406) throw error;
-				});
+			if (user) {
+				console.log(user);
+				supabase
+					.from('profiles')
+					.select(`discord_id, avatar_url, discord_name`)
+					.eq('id', user?.id)
+					.single()
+					.then(({ data, error, status }) => {
+						if (data) {
+							discord_name = data.discord_name;
+							discord_id = data.discord_id;
+							avatar_url = data.avatar_url;
+						}
+						if (error && status !== 406) throw error;
+					});
+			}
 		} catch (error) {
 			alert(error.message);
 		} finally {
@@ -37,8 +39,9 @@
 		try {
 			loading = true;
 			let { error } = await supabase.auth.signOut();
+			console.log('signed out');
 			if (error) throw error;
-			await invalidate('/account');
+			await goto('/');
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -68,7 +71,6 @@
 
 						<div class="flex flex-col text-center mt-3 mb-4">
 							<span class="text-2xl font-medium">{discord_name}</span>
-							<span class="text-md text-gray-400">{$user.email}</span>
 							<span class="text-xs text-gray-400">{discord_id}</span>
 						</div>
 

@@ -1,22 +1,30 @@
 <script>
-	import { user } from '$lib/sessionStore';
-	import { supabase } from '$lib/supabaseClient';
 	import Auth from '../../components/Auth.svelte';
 	import Profile from '../../components/Profile.svelte';
+	import { supabase } from '$lib/supabaseClient';
 
-	user.set(supabase.auth.user());
+	let loggedIn = false;
+	let loggedInUser;
 
-	supabase.auth.onAuthStateChange((_, session) => {
-		if (session) {
-			user.set(session.user);
+	const requestUser = async () => {
+		const { data, error } = await supabase.auth.getSession();
+		console.log(data);
+		if (!data.session) {
+			loggedIn = false;
 		} else {
-			user.set(null);
+			const {
+				data: { user }
+			} = await supabase.auth.getUser();
+
+			loggedIn = user ? true : false;
+			loggedInUser = user;
 		}
-	});
+	};
 </script>
 
-{#if $user}
-	<Profile />
+<div use:requestUser />
+{#if loggedIn}
+	<Profile user={loggedInUser} />
 {:else}
 	<Auth />
 {/if}

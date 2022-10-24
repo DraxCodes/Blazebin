@@ -3,6 +3,7 @@
 	import { pasteLanguage, pasteBody } from '$lib/pasteStore';
 	import { nanoid } from 'nanoid';
 	import { goto } from '$app/navigation';
+	import { supabase } from '$lib/supabaseClient';
 
 	let processing = false;
 	let val = ``;
@@ -19,7 +20,6 @@
 			});
 
 			const langResult = await langresponse.json();
-			console.log('lang result', langResult);
 
 			if (langResult.length > 0) {
 				pasteLanguage.set(langResult[0].languageId);
@@ -28,6 +28,14 @@
 			}
 
 			const id = nanoid(10);
+			const { data, error } = await supabase.auth.getSession();
+			let discord_id = '';
+			if (data.session) {
+				const {
+					data: { user }
+				} = await supabase.auth.getUser();
+				discord_id = user.user_metadata.provider_id;
+			}
 
 			const dbAddResponse = await fetch('/api/db/add', {
 				method: 'POST',
@@ -35,7 +43,8 @@
 					language: $pasteLanguage,
 					body: $pasteBody,
 					date: Date.now(),
-					url_slug: id
+					url_slug: id,
+					discord_id
 				}),
 				headers: {
 					'content-type': 'application/json'
@@ -59,12 +68,6 @@
 		<div class="md:block">
 			<div class="relative items-center mt-3">
 				<div class="absolute right-0 grid grid-flow-col">
-					<div class="mr-3">
-						<input
-							class="block w-full px-10 py-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-							placeholder="Discord ID (optional)"
-						/>
-					</div>
 					<button
 						on:click={handleSubmit}
 						disabled={processing}

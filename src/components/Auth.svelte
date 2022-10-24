@@ -2,32 +2,16 @@
 	import { supabase } from '$lib/supabaseClient';
 
 	let loading = false;
-	let email;
 
 	const handleDiscordLogin = async () => {
 		try {
 			loading = true;
-			const { user, error } = await supabase.auth.signIn({
+			const { data, error } = await supabase.auth.signInWithOAuth({
 				provider: 'discord'
 			});
-			console.debug('Auth', user);
 			if (error) throw error;
 		} catch (error) {
 			console.log(error);
-			alert(error.error.description || error.message);
-		} finally {
-			loading = false;
-		}
-	};
-
-	const handleLogin = async () => {
-		try {
-			loading = true;
-			const { error } = await supabase.auth.signIn({ email });
-			if (error) throw error;
-			alert('Check your email for the login link!');
-		} catch (error) {
-			alert(error.error_description || error.message);
 		} finally {
 			loading = false;
 		}
